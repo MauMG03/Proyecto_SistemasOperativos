@@ -51,3 +51,13 @@ def inicio():
             '<p><h3>- Mauricio Munoz Gutierrez</h3></p>' + \
             '<p><h3>- Sebastian Idrobo Avirama</h3></p>' + \
             '<p>Valor del contador {}</p></div>'.format(count[1]).replace('\n','\n')
+
+@app.route('/counter', methods=['GET'])
+def hello():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM Counter;')
+    count = cur.fetchone()
+    cur.close()
+    conn.close()
+    return 'El valor del contador es {}'.format(count[1])
