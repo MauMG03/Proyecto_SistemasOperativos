@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify, abort, make_response, request
 import psycopg2
 import time
 
@@ -53,7 +53,7 @@ def inicio():
             '<p>Valor del contador {}</p></div>'.format(count[1]).replace('\n','\n')
 
 @app.route('/counter', methods=['GET'])
-def hello():
+def getValue():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT * FROM Counter;')
@@ -61,3 +61,16 @@ def hello():
     cur.close()
     conn.close()
     return 'El valor del contador es {}'.format(count[1])
+
+@app.route('/counter', methods=['POST'])
+def assignValue():
+    if not request.json or not 'value' in request.json:
+        abort(400)
+    value = request.json['value']    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('UPDATE Counter SET value = (%s);', (value,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return 'Valor del contador actualizado a {}'.format(value)
