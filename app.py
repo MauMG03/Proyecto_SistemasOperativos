@@ -40,11 +40,14 @@ def get_db_connection():
     return conn
 
 @app.route('/')
-def hello():
+def inicio():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT * FROM Counter;')
     count = cur.fetchone()
     cur.close()
     conn.close()
-    return 'Hello World! {}'.format(count[1])
+    return  '<div><p><h1>Docker Compose - Sistemas Operativos.</h1></p>' + \
+            '<p><h3>- Mauricio Munoz Gutierrez</h3></p>' + \
+            '<p><h3>- Sebastian Idrobo Avirama</h3></p>' + \
+            '<p>Valor del contador {}</p></div>'.format(count[1]).replace('\n','\n')
