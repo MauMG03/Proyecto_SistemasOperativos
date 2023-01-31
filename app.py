@@ -89,3 +89,13 @@ def deleteValue():
     conn.close()
     return 'El contador ha sido reseteado'
 
+#Actualizar el contador a un valor particular (En este caso, a 5)
+@app.route('/counter', methods=['PUT'])
+def updateValue():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('UPDATE Counter SET value = 5')
+    conn.commit()
+    cur.close()
+    conn.close()
+    return 'EL contador ha sido actualizado a 5'
