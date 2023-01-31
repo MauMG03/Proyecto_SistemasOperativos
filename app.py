@@ -52,6 +52,7 @@ def inicio():
             '<p><h3>- Sebastian Idrobo Avirama</h3></p>' + \
             '<p>Valor del contador {}</p></div>'.format(count[1]).replace('\n','\n')
 
+#Consultar el valor del contador
 @app.route('/counter', methods=['GET'])
 def getValue():
     conn = get_db_connection()
@@ -62,6 +63,7 @@ def getValue():
     conn.close()
     return 'El valor del contador es {}'.format(count[1])
 
+#Asignar el contador un valor particular
 @app.route('/counter', methods=['POST'])
 def assignValue():
     if not request.json or not 'value' in request.json:
@@ -74,3 +76,16 @@ def assignValue():
     cur.close()
     conn.close()
     return 'Valor del contador actualizado a {}'.format(value)
+
+#Resetear el contador
+@app.route('/counter', methods=['DELETE'])
+def deleteValue():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('TRUNCATE Counter;')
+    cur.execute('INSERT INTO Counter(value) VALUES (0);')
+    conn.commit()
+    cur.close()
+    conn.close()
+    return 'El contador ha sido reseteado'
+
