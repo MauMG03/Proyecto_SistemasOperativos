@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort, make_response, request
+from flask import Flask, jsonify, abort, request
 import psycopg2
 import time
 
@@ -50,7 +50,7 @@ def inicio():
     return  '<div><p><h1>Docker Compose - Sistemas Operativos.</h1></p>' + \
             '<p><h3>- Mauricio Munoz Gutierrez</h3></p>' + \
             '<p><h3>- Sebastian Idrobo Avirama</h3></p>' + \
-            '<p>Valor del contador {}</p></div>'.format(count[1]).replace('\n','\n')
+            '<p>Para realizar las distintas operaciones, dirigase a la ruta "/counter".</p></div>'.format(count[1]).replace('\n','\n')
 
 #Consultar el valor del contador
 @app.route('/counter', methods=['GET'])
@@ -91,4 +91,14 @@ def deleteValue():
 
 #Actualizar el contador a un valor particular (En este caso, a 5)
 @app.route('/counter', methods=['PUT'])
-    assignValue()
+def assignValuePut():
+    if not request.json or not 'value' in request.json:
+        abort(400)
+    value = request.json['value']    
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('UPDATE Counter SET value = (%s);', (value,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return 'Valor del contador actualizado a {}'.format(value)
